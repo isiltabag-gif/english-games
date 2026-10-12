@@ -20,7 +20,7 @@ q:[["What is the father's name?",["Josh","Chuck","Jordan","Tom"],1],["What was h
 {t:"🏀 Card 3: Mom",s:"The boys' mother is Crystal Bell. She works at the boys' school. She is a strict mom. Homework is very important to her. She says: \"First homework, then basketball!\"",
 q:[["Where does Mom work?",["At a hospital","At the boys' school","At a shop","At home"],1],["What kind of mom is she?",["Strict","Lazy","Funny","Angry"],0],["What is very important to her?",["Games","Money","Homework","TV"],2],["What comes first for the boys?",["Basketball","Dinner","Sleep","Homework"],3]]}];
 let k=0,j=0,score=0,total=12,wrong=[];const c=document.getElementById('c');
-function show(){if(k>=S.length){c.innerHTML=`<div class="big">🏆 Bitti!<br><br>⭐ ${score} / ${total}<br><br>${score>=10?'Süpersin! 🎉':score>=7?'Çok iyi! 👏':'Yarın daha iyi olacak! 💪'}</div><button id="next" style="display:block" onclick="k=0;j=0;score=0;wrong=[];show()">🔁 Tekrar oyna</button><button id="next" style="display:block;margin-top:10px;background:#25D366" onclick="send()">📩 Sonucu anneme gönder</button>`;return}
+function show(){if(k>=S.length){c.innerHTML=`<div class="big">🏆 Bitti!<br><br>⭐ ${score} / ${total}<br><br>${score>=10?'Süpersin! 🎉':score>=7?'Çok iyi! 👏':'Yarın daha iyi olacak! 💪'}</div><button id="next" style="display:block" onclick="k=0;j=0;score=0;wrong=[];show()">🔁 Tekrar oyna</button><button id="next" style="display:block;margin-top:10px;background:#25D366" onclick="mail()">📧 Sonucu anneme e-postayla gönder</button><button id="next" style="display:block;margin-top:10px;background:#25D366" onclick="send()">💬 WhatsApp ile gönder</button>`;return}
 const x=S[k],q=x.q[j];
 c.innerHTML=`<div class="top"><span>Kart ${k+1}/3 · Soru ${j+1}/4</span><span>⭐ ${score}</span></div><h2>${x.t}</h2><p class="story">${x.s}</p><p class="q">${q[0]}</p>`+
 q[1].map((o,i)=>`<button class="opt" onclick="ans(this,${i})">${'ABCD'[i]}) ${o}</button>`).join('')+`<div id="msg"></div><button id="next" onclick="nx()">Sonraki ➡️</button>`}
@@ -29,6 +29,8 @@ if(i===q[2]){b.classList.add('ok');score++;msg.textContent='✅ Doğru! Harika!'
 else{b.classList.add('no');wrong.push('Kart '+(k+1)+' Soru '+(j+1)+': '+q[0]+' (Verdiği: '+q[1][i]+', Doğru: '+q[1][q[2]]+')');bs[q[2]].classList.add('ok');msg.textContent='❌ Yanlış. Doğru cevap: '+'ABCD'[q[2]];msg.style.color='#e74c3c'}
 document.getElementById('next').style.display='block'}
 function send(){const day=(document.title.match(/Day \d+/)||[location.pathname.split('/').pop()])[0];const t='📚 '+day+'\n✅ Doğru: '+score+'\n❌ Yanlış: '+(total-score)+(wrong.length?'\n\nYanlışlar:\n'+wrong.join('\n'):'\n\nHepsi doğru! 🎉');location.href='https://wa.me/?text='+encodeURIComponent(t)}
+function txt(){const day=(document.title.match(/Day \d+/)||[location.pathname.split('/').pop()])[0];return [day,'📚 '+day+'\n✅ Doğru: '+score+'\n❌ Yanlış: '+(total-score)+(wrong.length?'\n\nYanlışlar:\n'+wrong.join('\n'):'\n\nHepsi doğru! 🎉')]}
+function mail(){const [d,t]=txt();location.href='mailto:isiltabag@gmail.com?subject='+encodeURIComponent('English Games sonucu - '+d)+'&body='+encodeURIComponent(t)}
 function nx(){j++;if(j>=4){j=0;k++}show()}
 show();
 </script></body></html>
