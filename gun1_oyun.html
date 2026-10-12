@@ -30,7 +30,7 @@ else{b.classList.add('no');wrong.push('Kart '+(k+1)+' Soru '+(j+1)+': '+q[0]+' (
 document.getElementById('next').style.display='block'}
 function send(){const day=(document.title.match(/Day \d+/)||[location.pathname.split('/').pop()])[0];const t='📚 '+day+'\n✅ Doğru: '+score+'\n❌ Yanlış: '+(total-score)+(wrong.length?'\n\nYanlışlar:\n'+wrong.join('\n'):'\n\nHepsi doğru! 🎉');location.href='https://wa.me/?text='+encodeURIComponent(t)}
 function txt(){const day=(document.title.match(/Day \d+/)||[location.pathname.split('/').pop()])[0];return [day,'📚 '+day+'\n✅ Doğru: '+score+'\n❌ Yanlış: '+(total-score)+(wrong.length?'\n\nYanlışlar:\n'+wrong.join('\n'):'\n\nHepsi doğru! 🎉')]}
-function mail(){const [d,t]=txt();location.href='mailto:isiltabag@gmail.com?subject='+encodeURIComponent('English Games sonucu - '+d)+'&body='+encodeURIComponent(t)}
+function mail(){const [d,t]=txt();const su=encodeURIComponent('English Games sonucu - '+d),bo=encodeURIComponent(t);if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){location.href='mailto:isiltabag@gmail.com?subject='+su+'&body='+bo}else{window.open('https://mail.google.com/mail/?view=cm&fs=1&to=isiltabag@gmail.com&su='+su+'&body='+bo,'_blank')}}
 function nx(){j++;if(j>=4){j=0;k++}show()}
 show();
 </script></body></html>
