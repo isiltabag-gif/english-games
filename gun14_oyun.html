@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Crossover Day 14 Speaking + Weekly Review</title>
+<style>
+body{font-family:Arial,sans-serif;background:linear-gradient(#fbc2eb,#a6c1ee);margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.card{background:#fff;border-radius:22px;box-shadow:0 8px 24px #0003;width:92%;max-width:560px;padding:22px;border-top:12px solid #8e44ad}
+.top{display:flex;justify-content:space-between;font-weight:bold;color:#555}
+h2{color:#8e44ad;margin:8px 0}.story{font-size:19px;line-height:1.6;background:#f5eefa;padding:12px;border-radius:12px}
+.tag{display:inline-block;background:#f5eefa;color:#8e44ad;border-radius:10px;padding:3px 10px;font-size:14px;font-weight:bold}
+.q{font-size:19px;font-weight:bold;margin:14px 0 8px}
+button.opt{display:block;width:100%;text-align:left;font-size:18px;margin:7px 0;padding:12px;border:2px solid #ddd;border-radius:12px;background:#fafafa;cursor:pointer}
+button.opt:hover{background:#f5eefa}.ok{background:#c8f7c5!important;border-color:#27ae60!important}.no{background:#ffd0d0!important;border-color:#e74c3c!important}
+#msg{font-size:20px;font-weight:bold;text-align:center;min-height:28px;margin:8px}
+#next,.btn{display:none;width:100%;font-size:20px;padding:12px;border:none;border-radius:12px;background:#8e44ad;color:#fff;cursor:pointer}
+.btn{display:block;margin-top:10px}
+.big{text-align:center;font-size:24px}
+.lis{font-size:17px;padding:10px 14px;border:none;border-radius:12px;background:#3498db;color:#fff;cursor:pointer;margin:3px}
+.hint{text-align:center;color:#777;font-size:15px;margin:4px}
+.write{font-size:17px;line-height:1.5;background:#fff8e7;padding:12px;border-radius:12px}
+.sample{font-size:17px;line-height:1.5;background:#e8f8f5;padding:12px;border-radius:12px;margin-top:10px;display:none}
+.words{font-size:16px;background:#eef6ff;padding:10px;border-radius:12px;line-height:1.5}
+</style></head><body><div class="card" id="c"></div>
+<script>
+const Q=[
+{t:"🔁 Tekrar: Okuma (Gün 9)",q:"What does JB cut?",o:["Dad's hair","Josh's shoes","Mom's book","Josh's hair"],c:3},
+{t:"🔁 Tekrar: Okuma (Gün 9)",q:"Who wins the one-on-one game?",o:["JB","Josh","Dad","Nobody"],c:0},
+{t:"🎧 Tekrar: Dinleme (Gün 10)",l:"card2",s:"In the game, Josh throws the ball very hard. The ball hits JB in the face.",q:"What does the ball hit?",o:["The door","JB's face","Dad's car","The coach"],c:1},
+{t:"🎧 Tekrar: Dinleme (Gün 10)",l:"card3",s:"The coach blows his whistle. He says, \"Josh, we are a team!\"",q:"What does the coach say?",o:["Go home!","Good job!","Josh, we are a team!","Let's eat!"],c:2},
+{t:"🔁 Tekrar: Dilbilgisi (Gün 11)",q:"Josh ___ pass the ball to JB.",o:["don't","doesn't","isn't","not"],c:1},
+{t:"🔁 Tekrar: Dilbilgisi (Gün 11)",q:"The twins ___ talk at dinner.",o:["don't","doesn't","not","isn't"],c:0},
+{t:"🔁 Tekrar: Kelime (Gün 12)",q:"\"forgive\" ne demek?",o:["özlemek","incitmek","affetmek","kaybetmek"],c:2},
+{t:"🔁 Tekrar: Kelime (Gün 12)",q:"\"proud\" ne demek?",o:["gurur duyan","üzgün","kızgın","aç"],c:0},
+{t:"🔁 Tekrar: Okuma (Gün 13)",q:"What does Mom want Dad to do?",o:["Cook dinner","Play more","Go to the doctor","Buy a car"],c:2},
+{t:"🔁 Tekrar: Okuma (Gün 13)",q:"What do the twins hide?",o:["Apples","Dad's chips","The ball","Mom's book"],c:1},
+{t:"🏀 Yeni Kart: Apples on the Table",s:"On Sunday morning, Dad goes into the kitchen. He sees apples on the table. He looks for his chips, but he can't find them. He looks at the twins and laughs. He says, \"Okay, boys. Give me an apple!\"",a:"card1",q:"What does Dad see on the table?",o:["Chips","Pizza","Apples","A ball"],c:2},
+{t:"🏀 Yeni Kart: Apples on the Table",s:"On Sunday morning, Dad goes into the kitchen. He sees apples on the table. He looks for his chips, but he can't find them. He looks at the twins and laughs. He says, \"Okay, boys. Give me an apple!\"",a:"card1",q:"What is this card mostly about?",o:["Dad finds the apples and asks for one","Mom goes to the doctor","The twins play a big game","Dad is very angry at the twins"],c:0}];
+const SP=[
+{q:"Do you have a brother or a sister? What is his or her name?",tr:"Erkek ya da kız kardeşin var mı? Adı ne?",st:"I have a ___. His / Her name is ___. (ya da: I don't have a brother or a sister.)",sa:"I have a brother. His name is Can."},
+{q:"What do you do when you are angry?",tr:"Kızgın olduğunda ne yaparsın?",st:"When I am angry, I ___.",sa:"When I am angry, I listen to music."},
+{q:"What healthy food do you like?",tr:"Hangi sağlıklı yiyecekleri seversin?",st:"I like ___. It is / They are healthy.",sa:"I like apples and bananas. They are healthy."}];
+let k=-1,score=0,total=12,wrong=[],phase='quiz',sp=0,spk=0;const c=document.getElementById('c');
+let A=null;function stopA(){if(A){A.pause();A.currentTime=0}}
+function play(id,slow){stopA();A=new Audio('audio/gun14_'+id+(slow?'_slow':'')+'.mp3');A.play()}
+function show(){
+if(k<0){c.innerHTML=`<h2>🏆 Day 14: Weekly Review + Speaking</h2><p class="story">Bu hafta neler oldu? ✂️ JB, Josh'un saçını kesti · 🏀 Sert pas · 🤗 Kardeşler barıştı · 🩺 Babaları yorgun · 🍎 Gizli plan!</p><p class="words"><b>📋 Bugünün planı:</b><br>1️⃣ Haftanın tekrarı: 10 kısa soru (okuma, dinleme, dilbilgisi, kelime)<br>2️⃣ Hikâyenin devamı: 1 mini kart, 2 soru 🍎<br>3️⃣ Konuşma görevi: 3 soru, telefonla kendini kaydet 🎤</p><p class="hint">12 soru · her doğru = ⭐ · sonra 🎤 3 konuşma</p><button id="next" style="display:block;margin-top:12px" onclick="k=0;show()">Başla ▶️</button>`;return}
+if(phase==='speak'){const x=SP[sp];
+c.innerHTML=`<div class="top"><span>🎤 Konuşma ${sp+1}/3</span><span>⭐ ${score}/${total}</span></div><h2>🎤 Konuşma Görevi</h2>${sp===0?`<p class="write">📱 <b>Telefonunun ses kaydını aç</b> (Ses Kaydedici / Sesli Notlar).<br>Her soruyu 🔊 dinle, sonra <b>yüksek sesle</b> 1–2 cümleyle cevap ver. Takılırsan 💡 Yardım'a bas. Mükemmel olmak zorunda değil, denemek yeter! 💪</p>`:''}<div style="text-align:center;margin:6px 0"><button class="lis" onclick="play('q${sp+1}',0)">🔊 Soruyu dinle</button> <button class="lis" onclick="play('q${sp+1}',1)">🐢 Yavaş dinle</button></div><p class="q">${x.q}</p><p class="hint">(${x.tr})</p><div class="sample" id="samp"><b>🧩 Kalıp:</b> ${x.st}<br><b>💡 Örnek:</b> ${x.sa}<br><button class="lis" onclick="play('a${sp+1}',0)">🔊 Örneği dinle</button> <button class="lis" onclick="play('a${sp+1}',1)">🐢 Yavaş</button></div><div id="msg"></div><button class="btn" style="background:#f39c12" onclick="document.getElementById('samp').style.display='block'">💡 Yardım</button><button class="btn" style="background:#27ae60" onclick="said()">✅ Cevabımı söyledim / kaydettim</button>`;return}
+if(k>=Q.length){stopA();phase='speak';sp=0;show();return}
+const x=Q[k];let mid='';
+if(x.l){mid=`<p class="hint">🎧 Metin gizli! Sadece dinle 🤫</p><div style="text-align:center;margin:6px 0"><button class="lis" onclick="play('${x.l}',0)">🔊 Dinle</button> <button class="lis" onclick="play('${x.l}',1)">🐢 Yavaş dinle</button></div><p class="story" id="hid" style="display:none">${x.s}</p>`}
+else if(x.s){mid=`<p class="story">${x.s}</p><div style="text-align:center;margin:6px 0"><button class="lis" onclick="play('${x.a}',0)">🔊 Dinle</button> <button class="lis" onclick="play('${x.a}',1)">🐢 Yavaş dinle</button></div>`}
+else if(k===0){mid=`<p class="hint">Bu hafta öğrendiklerini hatırla! 🧠</p>`}
+c.innerHTML=`<div class="top"><span>Soru ${k+1}/${Q.length}</span><span>⭐ ${score}</span></div><h2>${x.t}</h2>`+mid+`<p class="q">${x.q}</p>`+
+x.o.map((o,i)=>`<button class="opt" onclick="ans(this,${i})">${'ABCD'[i]}) ${o}</button>`).join('')+`<div id="msg"></div><button id="next" onclick="nx()">Sonraki ➡️</button>`}
+function ans(b,i){const x=Q[k],bs=document.querySelectorAll('.opt');bs.forEach(e=>e.disabled=true);
+if(i===x.c){b.classList.add('ok');score++;msg.textContent='✅ Doğru! Harika!';msg.style.color='#27ae60'}
+else{b.classList.add('no');wrong.push('Soru '+(k+1)+': '+x.q+' (Verdiği: '+x.o[i]+', Doğru: '+x.o[x.c]+')');bs[x.c].classList.add('ok');msg.textContent='❌ Yanlış. Doğru cevap: '+'ABCD'[x.c]+') '+x.o[x.c];msg.style.color='#e74c3c'}
+const h=document.getElementById('hid');if(h)h.style.display='block';
+document.getElementById('next').style.display='block'}
+function said(){stopA();spk++;sp++;if(sp>=SP.length){finish()}else{show()}}
+function finish(){stopA();phase='done';
+c.innerHTML=`<div class="big">🏆 Haftayı bitirdin!<br><br>⭐ ${score} / ${total}<br><br>${score>=10?'Süpersin! Bu haftanın şampiyonu sensin! 🎉':score>=7?'Çok iyi! Josh gibi hiç pes etmiyorsun! 👏':'Aferin, haftayı bitirdin! Her gün daha güçlüsün! 💪'}<br><br><span style="font-size:16px;color:#555">Tekrar + okuma: ${score}/${total} · Konuşma: ${spk}/3 🎤<br>Dad elma istedi! 🍎 Sence doktora gidecek mi? 🩺</span><br><span style="font-size:16px;color:#8e44ad">📱 Ses kaydını anneye göndermeyi unutma!</span></div><button id="next" style="display:block" onclick="k=0;score=0;wrong=[];sp=0;spk=0;phase='quiz';show()">🔁 Tekrar oyna</button><button id="next" style="display:block;margin-top:10px;background:#25D366" onclick="mail()">❤️ Sonucu güzel anneme gönder ❤️</button><button id="next" style="display:block;margin-top:10px;background:#25D366" onclick="send()">💬 WhatsApp ile gönder</button>`}
+function send(){const t=txt()[1];location.href='https://wa.me/?text='+encodeURIComponent(t)}
+function txt(){const day=(document.title.match(/Day \d+/)||[location.pathname.split('/').pop()])[0];return [day,'📚 '+day+'\n✅ Doğru: '+score+'\n❌ Yanlış: '+(total-score)+'\n🎤 Konuşma: '+spk+'/3'+(wrong.length?'\n\nYanlışlar:\n'+wrong.join('\n'):'\n\nHepsi doğru! 🎉')]}
+function mail(){const [d,t]=txt();const su=encodeURIComponent('English Games sonucu - '+d),bo=encodeURIComponent(t);if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){location.href='mailto:isiltabag@gmail.com?subject='+su+'&body='+bo}else{window.open('https://mail.google.com/mail/?view=cm&fs=1&to=isiltabag@gmail.com&su='+su+'&body='+bo,'_blank')}}
+function nx(){stopA();k++;show()}
+show();
+</script>
+<script src="report.js"></script>
+</body></html>
