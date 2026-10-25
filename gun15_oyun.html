@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Crossover Day 15 Sunday Fun Quiz</title>
+<style>
+body{font-family:Arial,sans-serif;background:linear-gradient(#fddb92,#d1fdff);margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.card{background:#fff;border-radius:22px;box-shadow:0 8px 24px #0003;width:92%;max-width:560px;padding:22px;border-top:12px solid #16a085}
+.top{display:flex;justify-content:space-between;font-weight:bold;color:#555}
+h2{color:#16a085;margin:8px 0}
+.emo{font-size:54px;text-align:center;margin:4px 0}
+.q{font-size:20px;font-weight:bold;margin:14px 0 8px}
+button.opt{display:block;width:100%;text-align:left;font-size:18px;margin:7px 0;padding:12px;border:2px solid #ddd;border-radius:12px;background:#fafafa;cursor:pointer}
+button.opt:hover{background:#e8f8f5}.ok{background:#c8f7c5!important;border-color:#27ae60!important}.no{background:#ffd0d0!important;border-color:#e74c3c!important}
+#msg{font-size:20px;font-weight:bold;text-align:center;min-height:28px;margin:8px}
+.hint{text-align:center;color:#777;font-size:15px;margin:4px}
+#next{display:none;width:100%;font-size:20px;padding:12px;border:none;border-radius:12px;background:#16a085;color:#fff;cursor:pointer}
+.big{text-align:center;font-size:24px}
+.start{display:block;width:100%;font-size:22px;padding:14px;border:none;border-radius:12px;background:#16a085;color:#fff;cursor:pointer;margin-top:14px}
+</style></head><body><div class="card" id="c"></div>
+<script>
+const Q=[
+{t:"🔤 Kelime",e:"📣",q:"\"fans\" ne demek?",o:["oyuncular", "taraftarlar", "hakemler", "öğretmenler"],c:1,h:"fans = taraftarlar"},
+{t:"🔤 Kelime",e:"😞",q:"\"lose\" kelimesinin tersi hangisi?",o:["win", "hurt", "miss", "hug"],c:0,h:"lose = kaybetmek ↔ win = kazanmak"},
+{t:"😀 Emoji Sorusu",e:"🤗",q:"The brothers ___ .",o:["kick", "hug", "sleep", "cry"],c:1,h:"🤗 = hug (sarılmak)"},
+{t:"✏️ Dilbilgisi",e:"🍎",q:"Dad ___ like apples. He likes chips!",o:["don't", "doesn't", "isn't", "not"],c:1,h:"Dad = he → doesn't"},
+{t:"✏️ Dilbilgisi",e:"👬",q:"Josh and JB ___ go to school on Sunday.",o:["doesn't", "isn't", "don't", "not"],c:2,h:"Josh and JB = they → don't"},
+{t:"🏀 Hikâye",e:"🙏",q:"After the game, what does Josh say to JB?",o:["\"I am sorry, JB.\"", "\"Go home!\"", "\"I am hungry.\"", "\"Good night!\""],c:0,h:"Josh says, \"I am sorry, JB. I hurt you.\""},
+{t:"🏀 Hikâye",e:"🪑",q:"In the big game, where does Josh sit?",o:["In the car", "On the bench", "At home", "In the kitchen"],c:1,h:"Josh can't play. He sits on the bench."},
+{t:"🏀 Hikâye",e:"😂",q:"Dad can't find his chips. What does he do?",o:["He gets angry", "He goes to sleep", "He laughs and asks for an apple", "He buys more chips"],c:2,h:"Dad laughs: \"Okay, boys. Give me an apple!\""}];
+let k=-1,score=0,total=8,wrong=[];const c=document.getElementById('c');
+function show(){
+if(k<0){c.innerHTML=`<h2>☀️ Pazar Mini Quiz</h2><div class="emo">🏀😎</div><p class="q" style="text-align:center">Sadece 8 soru, 5 dakika!</p><p class="hint">Bugün dinlenme günü. Bu haftayı hızlıca hatırla, yıldızları topla! ⭐</p><button class="start" onclick="k=0;show()">Başla 🚀</button>`;return}
+if(k>=Q.length){finish();return}
+const x=Q[k];
+c.innerHTML=`<div class="top"><span>Soru ${k+1}/${Q.length}</span><span>⭐ ${score}</span></div><h2>${x.t}</h2><div class="emo">${x.e}</div><p class="q">${x.q}</p>`+
+x.o.map((o,i)=>`<button class="opt" onclick="ans(this,${i})">${'ABCD'[i]}) ${o}</button>`).join('')+`<div id="msg"></div><p class="hint" id="h"></p><button id="next" onclick="nx()">Sonraki ➡️</button>`}
+function ans(b,i){const x=Q[k],bs=document.querySelectorAll('.opt');bs.forEach(e=>e.disabled=true);
+if(i===x.c){b.classList.add('ok');score++;msg.textContent='✅ Doğru! Harika!';msg.style.color='#27ae60'}
+else{b.classList.add('no');wrong.push('Soru '+(k+1)+': '+x.q+' (Verdiği: '+x.o[i]+', Doğru: '+x.o[x.c]+')');bs[x.c].classList.add('ok');msg.textContent='❌ Yanlış. Doğru cevap: '+'ABCD'[x.c];msg.style.color='#e74c3c'}
+document.getElementById('h').textContent='💡 '+x.h;
+document.getElementById('next').style.display='block'}
+function finish(){
+c.innerHTML=`<div class="big">🎉 Pazar quiz'i bitti!<br><br>⭐ ${score} / ${total}<br><br>${score>=7?'Süpersin! Bu hafta çok şey öğrendin! 🏆':score>=5?'Çok iyi! 👏 Yarın yeni hafta başlıyor!':'Sorun değil, tekrar dene! 💪'}<br><br><span style="font-size:16px;color:#555">🏀 Yarın: Josh ve JB'nin hikâyesi devam ediyor...</span></div><button id="next" style="display:block" onclick="k=0;score=0;wrong=[];show()">🔁 Tekrar oyna</button><button id="next" style="display:block;margin-top:10px;background:#25D366" onclick="mail()">❤️ Sonucu güzel anneme gönder ❤️</button><button id="next" style="display:block;margin-top:10px;background:#25D366" onclick="send()">💬 WhatsApp ile gönder</button>`}
+function send(){const t=txt()[1];location.href='https://wa.me/?text='+encodeURIComponent(t)}
+function txt(){const day=(document.title.match(/Day \d+/)||[location.pathname.split('/').pop()])[0];return [day,'📚 '+day+'\n✅ Doğru: '+score+'\n❌ Yanlış: '+(total-score)+(wrong.length?'\n\nYanlışlar:\n'+wrong.join('\n'):'\n\nHepsi doğru! 🎉')]}
+function mail(){const [d,t]=txt();const su=encodeURIComponent('English Games sonucu - '+d),bo=encodeURIComponent(t);if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){location.href='mailto:isiltabag@gmail.com?subject='+su+'&body='+bo}else{window.open('https://mail.google.com/mail/?view=cm&fs=1&to=isiltabag@gmail.com&su='+su+'&body='+bo,'_blank')}}
+function nx(){k++;show()}
+show();
+</script><script src="report.js"></script></body></html>
