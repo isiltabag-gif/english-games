@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Crossover Day 18 Grammar Game</title>
+<style>
+body{font-family:Arial,sans-serif;background:linear-gradient(#ffecd2,#fcb69f);margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.card{background:#fff;border-radius:22px;box-shadow:0 8px 24px #0003;width:92%;max-width:560px;padding:22px;border-top:12px solid #e67e22}
+.top{display:flex;justify-content:space-between;font-weight:bold;color:#555}
+h2{color:#e67e22;margin:8px 0}.story{font-size:19px;line-height:1.6;background:#fff7ee;padding:12px;border-radius:12px}
+.q{font-size:19px;font-weight:bold;margin:14px 0 8px}
+button.opt{display:block;width:100%;text-align:left;font-size:18px;margin:7px 0;padding:12px;border:2px solid #ddd;border-radius:12px;background:#fafafa;cursor:pointer}
+button.opt:hover{background:#fff3e0}.ok{background:#c8f7c5!important;border-color:#27ae60!important}.no{background:#ffd0d0!important;border-color:#e74c3c!important}
+#msg{font-size:20px;font-weight:bold;text-align:center;min-height:28px;margin:8px}
+#next{display:none;width:100%;font-size:20px;padding:12px;border:none;border-radius:12px;background:#e67e22;color:#fff;cursor:pointer}
+.big{text-align:center;font-size:24px}
+.bl{color:#e67e22;font-weight:bold}.exp{font-size:17px;line-height:1.6;background:#eef6ff;padding:12px;border-radius:12px;text-align:left}.lis{font-size:19px;padding:10px 16px;border:none;border-radius:12px;background:#3498db;color:#fff;cursor:pointer;margin:3px}.hint{text-align:center;color:#777;font-size:15px;margin:4px}
+</style></head><body><div class="card" id="c"></div>
+<script>
+const S=[{"s": "Josh <span class='bl'>___</span> running down the court.", "o": ["am", "is", "are", "be"], "a": 1, "h": "Josh = he → is"}, {"s": "The twins <span class='bl'>___</span> wearing their new shoes.", "o": ["is", "am", "are", "be"], "a": 2, "h": "The twins = they → are"}, {"s": "\"I <span class='bl'>___</span> playing my best game!\" says JB.", "o": ["am", "is", "are", "be"], "a": 0, "h": "I → am"}, {"s": "Mom and Dad <span class='bl'>___</span> sitting in the crowd.", "o": ["is", "are", "am", "be"], "a": 1, "h": "Mom and Dad = they → are"}, {"s": "Dad is <span class='bl'>___</span> loudly.", "o": ["clap", "claps", "clapping", "clapped"], "a": 2, "h": "is'ten sonra fiil + ing → clapping (p iki kez!)"}, {"s": "Look! JB is <span class='bl'>___</span> the ball to Josh.", "o": ["passing", "pass", "passes", "passed"], "a": 0, "h": "is + fiil-ing → passing"}, {"s": "The crowd <span class='bl'>___</span> shouting Josh's name.", "o": ["are", "am", "is", "be"], "a": 2, "h": "The crowd = it → is"}, {"s": "\"We <span class='bl'>___</span> winning!\" Josh says to JB.", "o": ["are", "is", "am", "be"], "a": 0, "h": "We → are"}, {"s": "Josh is <span class='bl'>___</span> very fast today.", "o": ["runing", "running", "runs", "run"], "a": 1, "h": "run → running (n iki kez!)"}, {"s": "The other team <span class='bl'>___</span> playing well today.", "o": ["isn't", "aren't", "don't", "doesn't"], "a": 0, "h": "The other team = it → isn't (is not)"}];
+const EXP="<b>📘 Bugünün konusu: Şimdiki Zaman (Present Continuous)</b><br>ŞU ANDA olan şeyi anlatır. (Türkçede: koşuyor, izliyor)<br><br>👉 <b>I</b> + <b>am</b> + fiil-ing: <i>I am playing</i><br>👉 <b>he / she / it</b> + <b>is</b> + fiil-ing: <i>Josh is running</i><br>👉 <b>we / you / they</b> + <b>are</b> + fiil-ing: <i>They are watching</i><br><br>⚠️ Bazı fiiller harf ikiler: run → <b>running</b>, sit → <b>sitting</b>, clap → <b>clapping</b><br>❌ Olumsuz: <b>isn't / aren't</b> + fiil-ing: <i>JB isn't sleeping</i><br><br>💡 İpucu: \"Look!\" ya da \"now\" görürsen genelde şimdiki zamandır.";
+let k=-1,score=0,total=10,wrong=[];const c=document.getElementById('c');
+function show(){if(k<0){c.innerHTML=`<h2>🏀 Day 18: Game Day!</h2><p class="story">It is Saturday. It is the big game! The gym is very loud. Josh and JB are playing. Mom and Dad are watching. 🏀 Today, let's learn what people ARE DOING right now.</p><div class="exp">${EXP}</div><button id="next" style="display:block;margin-top:12px" onclick="k=0;show()">Başla ▶️</button>`;return}
+if(k>=S.length){c.innerHTML=`<div class="big">🏆 Bitti!<br><br>⭐ ${score} / ${total}<br><br>${score>=8?'Süpersin! Şimdiki zaman ustası oldun! 🎉':score>=6?'Çok iyi! 👏':'Yarın daha iyi olacak! 💪'}</div><button id="next" style="display:block" onclick="k=0;score=0;wrong=[];show()">🔁 Tekrar oyna</button><button id="next" style="display:block;margin-top:10px;background:#25D366" onclick="mail()">❤️ Sonucu güzel anneme gönder ❤️</button><button id="next" style="display:block;margin-top:10px;background:#25D366" onclick="send()">💬 WhatsApp ile gönder</button>`;return}
+const q=S[k];
+c.innerHTML=`<div class="top"><span>Soru ${k+1}/${S.length}</span><span>⭐ ${score}</span></div><h2>✏️ Boşluğa ne gelir?</h2><p class="story">${q.s}</p>`+
+q.o.map((o,i)=>`<button class="opt" onclick="ans(this,${i})">${'ABCD'[i]}) ${o}</button>`).join('')+`<div id="msg"></div><p class="hint" id="hn" style="display:none"></p><div id="au" style="text-align:center;display:none;margin:6px 0"><button class="lis" onclick="say(0)">🔊 Cümleyi dinle</button> <button class="lis" onclick="say(1)">🐢 Yavaş dinle</button></div><button id="next" onclick="nx()">Sonraki ➡️</button>`}
+function ans(b,i){const q=S[k],bs=document.querySelectorAll('.opt');bs.forEach(e=>e.disabled=true);
+if(i===q.a){b.classList.add('ok');score++;msg.textContent='✅ Doğru! Harika!';msg.style.color='#27ae60'}
+else{b.classList.add('no');wrong.push('Soru '+(k+1)+': '+q.s.replace(/<[^>]+>/g,'')+' (Verdiği: '+q.o[i]+', Doğru: '+q.o[q.a]+')');bs[q.a].classList.add('ok');msg.textContent='❌ Yanlış. Doğru cevap: '+'ABCD'[q.a]+') '+q.o[q.a];msg.style.color='#e74c3c'}
+const hn=document.getElementById('hn');hn.textContent='💡 '+q.h;hn.style.display='block';document.getElementById('au').style.display='block';
+document.getElementById('next').style.display='block'}
+function send(){const day=(document.title.match(/Day \d+/)||[location.pathname.split('/').pop()])[0];const t='📚 '+day+'\n✅ Doğru: '+score+'\n❌ Yanlış: '+(total-score)+(wrong.length?'\n\nYanlışlar:\n'+wrong.join('\n'):'\n\nHepsi doğru! 🎉');location.href='https://wa.me/?text='+encodeURIComponent(t)}
+function txt(){const day=(document.title.match(/Day \d+/)||[location.pathname.split('/').pop()])[0];return [day,'📚 '+day+'\n✅ Doğru: '+score+'\n❌ Yanlış: '+(total-score)+(wrong.length?'\n\nYanlışlar:\n'+wrong.join('\n'):'\n\nHepsi doğru! 🎉')]}
+function mail(){const [d,t]=txt();const su=encodeURIComponent('English Games sonucu - '+d),bo=encodeURIComponent(t);if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){location.href='mailto:isiltabag@gmail.com?subject='+su+'&body='+bo}else{window.open('https://mail.google.com/mail/?view=cm&fs=1&to=isiltabag@gmail.com&su='+su+'&body='+bo,'_blank')}}
+let A=null;function stopA(){if(A){A.pause();A.currentTime=0}}
+function say(slow){stopA();A=new Audio('audio/gun18_q'+(k+1)+(slow?'_slow':'')+'.mp3');A.play()}
+function nx(){stopA();k++;show()}
+show();
+</script><script src="report.js"></script></body></html>
